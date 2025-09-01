@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="main-container result-page">
+        <header class="app-header">
+             <div class="logo">
+                <i class="fas fa-heart-pulse"></i>
+                <h1>Prediction Result</h1>
+            </div>
+        </header>
+        
+        <div class="result-card">
+            <div class="result-icon">
+                <i class="fas fa-file-medical"></i>
+            </div>
+            <p class="result-intro">Based on the symptoms provided, the AI model suggests a potential diagnosis of:</p>
+            <h2 class="prediction-text">{{ prediction }}</h2>
+            <div class="disclaimer">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>Important Disclaimer:</strong> This is an AI-generated prediction and is not a substitute for professional medical advice. Please consult a qualified healthcare provider for an accurate diagnosis and treatment.</p>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i> Run Another Prediction
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Health Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-heart-pulse"></i>
+                <h1>Intelligent Health Predictor</h1>
+            </div>
+            <p class="subtitle">Enter your symptoms below to get a preliminary AI-powered prediction.</p>
+        </header>
+
+        <form action="/predict" method="post" id="symptom-form">
+            <div class="selection-container">
+                <!-- Left Side: Search and Symptom List -->
+                <div class="symptom-selector">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="symptom-search" placeholder="Search for a symptom...">
+                    </div>
+                    <div class="symptom-list" id="symptom-list">
+                        {% for symptom in symptoms %}
+                        <div class="symptom-item" data-symptom="{{ symptom }}">
+                            <input type="checkbox" id="{{ symptom }}" name="symptoms" value="{{ symptom }}">
+                            <label for="{{ symptom }}">{{ symptom }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Right Side: Selected Symptoms -->
+                <div class="selected-symptoms-wrapper">
+                    <div class="selected-header">
+                        <h3>Selected Symptoms (<span id="symptom-count">0</span>)</h3>
+                        <button type="button" class="clear-btn" id="clear-all">Clear All</button>
+                    </div>
+                    <div class="selected-symptoms-list" id="selected-list">
+                        <p id="placeholder-text">Your selected symptoms will appear here.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button type="submit" class="predict-button" id="predict-btn" disabled>
+                    <i class="fas fa-brain"></i> Predict Condition
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const symptomCheckboxes = document.querySelectorAll('.symptom-item input[type="checkbox"]');
+            const selectedList = document.getElementById('selected-list');
+            const symptomCount = document.getElementById('symptom-count');
+            const predictBtn = document.getElementById('predict-btn');
+            const placeholderText = document.getElementById('placeholder-text');
+            const symptomSearch = document.getElementById('symptom-search');
+            const symptomItems = document.querySelectorAll('.symptom-item');
+            const clearAllBtn = document.getElementById('clear-all');
+
+            function updateSelectedSymptoms() {
+                selectedList.innerHTML = '';
+                let count = 0;
+                
+                symptomCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        const symptomTag = document.createElement('div');
+                        symptomTag.className = 'symptom-tag';
+                        symptomTag.textContent = checkbox.value;
+                        
+                        const removeBtn = document.createElement('span');
+                        removeBtn.className = 'remove-tag';
+                        removeBtn.innerHTML = '&times;';
+                        removeBtn.onclick = () => {
+                            checkbox.checked = false;
+                            updateSelectedSymptoms();
+                        };
+                        
+                        symptomTag.appendChild(removeBtn);
+                        selectedList.appendChild(symptomTag);
+                        count++;
+                    }
+                });
+
+                symptomCount.textContent = count;
+                predictBtn.disabled = count === 0;
+                placeholderText.style.display = count === 0 ? 'block' : 'none';
+            }
+
+            symptomCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedSymptoms);
+            });
+
+            symptomSearch.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                symptomItems.forEach(item => {
+                    const symptomName = item.dataset.symptom.toLowerCase();
+                    if (symptomName.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+
+            clearAllBtn.addEventListener('click', () => {
+                symptomCheckboxes.forEach(checkbox => checkbox.checked = false);
+                updateSelectedSymptoms();
+            });
+            
+            updateSelectedSymptoms(); // Initial call
+        });
+    </script>
+</body>
+</html>
+
